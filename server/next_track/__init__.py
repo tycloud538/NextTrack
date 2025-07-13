@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, request
+from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from next_track.db import db
@@ -14,6 +15,7 @@ load_dotenv(os.path.join(BASEDIR, ".env"))
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
     app.config["SQLALCHEMY_ECHO"] = True
