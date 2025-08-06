@@ -1,27 +1,36 @@
-import { Button, Center } from "@mantine/core";
+import { useState } from "react";
+
+import { Button, Flex, Space } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
 
 import { postRecommendation } from "../api/postRecommendation";
 
+import { RecommendationDetails } from "./RecommendationDetails";
+
 const Recommendation = () => {
+  const [recommendation, setRecommendation] = useState(null);
+
   const mutation = useMutation({
     mutationFn: postRecommendation,
     onSuccess: (response) => {
-      console.log("TCL ~ Recommendation ~ response:", response);
+      setRecommendation(response);
     },
   });
 
   return (
-    <Center>
+    <Flex align="center" direction="column">
       <Button
         color="indigo"
+        radius="lg"
         variant="filled"
         size="lg"
         onClick={() => mutation.mutateAsync()}
       >
         Get Recommendation
       </Button>
-    </Center>
+      <Space h="xl" />
+      <RecommendationDetails recommendation={recommendation} />
+    </Flex>
   );
 };
 
