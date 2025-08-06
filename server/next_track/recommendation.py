@@ -1,9 +1,9 @@
 from flask import Blueprint, request
-from mbdata.models import LinkRecordingURL, RecordingMeta, RecordingTag, Tag, Track, URL
 from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
 from next_track.db import db
+from next_track.models import LinkRecordingURL, RecordingMeta, RecordingTag, Tag, Track, URL
 
 recommendation = Blueprint("recommendation", __name__)
 
