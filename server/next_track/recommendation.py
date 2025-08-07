@@ -3,7 +3,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
 from next_track.db import db
-from next_track.models import LinkRecordingURL, RecordingMeta, RecordingTag, Tag, Track, URL
+from next_track.models import LinkRecordingURL, Recording, RecordingMeta, RecordingTag, Tag, URL
 
 recommendation = Blueprint("recommendation", __name__)
 
@@ -39,15 +39,15 @@ def get_recommendation(params={}):
     print(params)
 
     track = (
-        db.session.query(Track)
+        db.session.query(Recording)
         # Loads associated artist in same query
-        .options(joinedload(Track.artist_credit))
-        .join(RecordingMeta, RecordingMeta.id == Track.recording_id)
+        .options(joinedload(Recording.artist_credit))
+        .join(RecordingMeta, RecordingMeta.id == Recording.id)
         # Finds a random track by randomly filtering for an id
-        .where(Track.id >= func.random() * select(func.max(Track.id)))
+        .where(Recording.id >= func.random() * select(func.max(Recording.id)))
         # The track should ideally have some user ratings available
         .where(RecordingMeta.rating_count >= 1)
-        .order_by(Track.id)
+        .order_by(Recording.id)
         .first()
     )
 
@@ -55,8 +55,8 @@ def get_recommendation(params={}):
         f"recommendation": "Your next track is: {} - {}".format(
             track.name, track.artist_credit.name
         ),
-        "track_id": track.id,
-        **get_recording_metadata(track.recording_id),
+        "id": track.id,
+        **get_recording_metadata(track.id),
     }
 
 
