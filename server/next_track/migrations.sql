@@ -26,7 +26,7 @@ create index recording_meta_rating_idx on recording_meta (rating desc nulls last
 
 create index recording_meta_rating_count_idx on recording_meta (rating_count desc nulls last);
 
--- SQL commands to generate rank values for necessary tables
+-- SQL commands to generate rank values for tag
 update tag t
 set rank = r.count
 from (
@@ -36,22 +36,26 @@ from (
 ) r
 where t.id = r.id;
 
-update recording r
-set rank = rm.rank
-from (
-  select id, rating + rating_count as rank
-  from recording_meta
-) rm
-where r.id = rm.id;
+-- SQL commands to generate rank values for recording
+-- Commented out as using batched updates in update_recording_ranks.sql
+-- update recording r
+-- set rank = rm.rank
+-- from (
+--   select id, rating + rating_count as rank
+--   from recording_meta
+-- ) rm
+-- where r.id = rm.id;
 
-update artist_credit ac
-set rank = r.rank
-from (
-  select recording.artist_credit as id, sum(rank) as rank
-  from recording
-  group by recording.artist_credit
-) r
-where ac.id = r.id;
+-- SQL commands to generate rank values for artist_credit
+-- Commented out as using batched updates in update_artist_credit_ranks.sql
+-- update artist_credit ac
+-- set rank = r.rank
+-- from (
+--   select recording.artist_credit as id, sum(rank) as rank
+--   from recording
+--   group by recording.artist_credit
+-- ) r
+-- where ac.id = r.id;
 
 -- SQL commands to create indexed rank columns on musicbrainz database
 create index artist_credit_rank_idx on artist_credit (rank desc);

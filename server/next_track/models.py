@@ -662,7 +662,7 @@ class ArtistCredit(Base):
     created = Column(DateTime(timezone=True), server_default=sql.func.now())
     edits_pending = Column(Integer, nullable=False, default=0, server_default=sql.text('0'))
     gid = Column(UUID, nullable=False)
-
+    rank = Column(Integer, nullable=False, default=0,  server_default=sql.text('0'))
 
 class ArtistCreditGIDRedirect(Base):
     __tablename__ = 'artist_credit_gid_redirect'
@@ -7407,6 +7407,7 @@ class Recording(Base):
     name = Column(String, nullable=False)
     artist_credit_id = Column('artist_credit', Integer, ForeignKey(apply_schema('artist_credit.id', 'musicbrainz'), name='recording_fk_artist_credit'), nullable=False)
     length = Column(Integer)
+    rank = Column(Integer, nullable=False, default=0,  server_default=sql.text('0'))
     comment = Column(String(255), nullable=False, default='', server_default=sql.text("''"))
     edits_pending = Column(Integer, nullable=False, default=0, server_default=sql.text('0'))
     last_updated = Column(DateTime(timezone=True), server_default=sql.func.now())
@@ -8480,6 +8481,7 @@ class Tag(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
+    rank = Column(Integer, nullable=False, default=0, server_default=sql.text('0'))
     ref_count = Column(Integer, nullable=False, default=0, server_default=sql.text('0'))
 
 

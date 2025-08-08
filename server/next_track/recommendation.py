@@ -20,6 +20,7 @@ def get_recording_metadata(recording_id):
         db.session.query(Tag)
         .join(RecordingTag.tag)
         .where(RecordingTag.recording_id == recording_id)
+        .order_by(Tag.rank.desc())
         .all()
     )
 
@@ -42,11 +43,10 @@ def get_recommendation(params={}):
         db.session.query(Recording)
         # Loads associated artist in same query
         .options(joinedload(Recording.artist_credit))
-        .join(RecordingMeta, RecordingMeta.id == Recording.id)
         # Finds a random track by randomly filtering for an id
         .where(Recording.id >= func.random() * select(func.max(Recording.id)))
         # The track should ideally have some user ratings available
-        .where(RecordingMeta.rating_count >= 1)
+        .where(Recording.rank > 0)
         .order_by(Recording.id)
         .first()
     )
