@@ -3,7 +3,14 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
 from next_track.db import db
-from next_track.models import LinkRecordingURL, Recording, RecordingMeta, RecordingTag, Tag, URL
+from next_track.models import (
+    LinkRecordingURL,
+    Recording,
+    RecordingMeta,
+    RecordingTag,
+    Tag,
+    URL,
+)
 
 recommendation = Blueprint("recommendation", __name__)
 

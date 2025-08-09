@@ -7,6 +7,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from next_track.db import db
 from next_track.home import home
 from next_track.recommendation import recommendation
+from next_track.search import search
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,6 +25,7 @@ def create_app():
 
     app.register_blueprint(home)
     app.register_blueprint(recommendation)
+    app.register_blueprint(search)
 
     db.init_app(app)
 
