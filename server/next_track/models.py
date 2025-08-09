@@ -16,6 +16,7 @@ from sqlalchemy import (
     CHAR,
     CheckConstraint,
     sql,
+    func,
 )
 
 try:
@@ -1182,10 +1183,6 @@ class ArtistTagRaw(Base):
 
 class ArtistCredit(Base):
     __tablename__ = "artist_credit"
-    __table_args__ = (
-        Index("artist_credit_idx_gid", "gid", unique=True),
-        {"schema": mbdata.config.schemas.get("musicbrainz", "musicbrainz")},
-    )
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -1198,8 +1195,15 @@ class ArtistCredit(Base):
     gid = Column(UUID, nullable=False)
     rank = Column(Integer, nullable=False, default=0, server_default=sql.text("0"))
 
-
-
+    __table_args__ = (
+        Index("artist_credit_idx_gid", "gid", unique=True),
+        Index(
+            "artist_credit_search_idx",
+            func.to_tsvector("english", name),
+            postgresql_using="gin",
+        ),
+        {"schema": mbdata.config.schemas.get("musicbrainz", "musicbrainz")},
+    )
 
 
 class ArtistCreditGIDRedirect(Base):
@@ -13988,12 +13992,6 @@ class ReplicationControl(Base):
 
 class Recording(Base):
     __tablename__ = "recording"
-    __table_args__ = (
-        Index("recording_idx_gid", "gid", unique=True),
-        Index("recording_idx_name", "name"),
-        Index("recording_idx_artist_credit", "artist_credit"),
-        {"schema": mbdata.config.schemas.get("musicbrainz", "musicbrainz")},
-    )
 
     id = Column(Integer, primary_key=True)
     gid = Column(UUID, nullable=False)
@@ -14020,6 +14018,18 @@ class Recording(Base):
 
     artist_credit = relationship(
         "ArtistCredit", foreign_keys=[artist_credit_id], innerjoin=True
+    )
+
+    __table_args__ = (
+        Index("recording_idx_gid", "gid", unique=True),
+        Index("recording_idx_name", "name"),
+        Index("recording_idx_artist_credit", "artist_credit"),
+        Index(
+            "recording_search_idx",
+            func.to_tsvector("english", name),
+            postgresql_using="gin",
+        ),
+        {"schema": mbdata.config.schemas.get("musicbrainz", "musicbrainz")},
     )
 
 
@@ -16039,15 +16049,21 @@ class SeriesTagRaw(Base):
 
 class Tag(Base):
     __tablename__ = "tag"
-    __table_args__ = (
-        Index("tag_idx_name", "name", unique=True),
-        {"schema": mbdata.config.schemas.get("musicbrainz", "musicbrainz")},
-    )
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     rank = Column(Integer, nullable=False, default=0, server_default=sql.text("0"))
     ref_count = Column(Integer, nullable=False, default=0, server_default=sql.text("0"))
+
+    __table_args__ = (
+        Index("tag_idx_name", "name", unique=True),
+        Index(
+            "tag_search_idx",
+            func.to_tsvector("english", name),
+            postgresql_using="gin",
+        ),
+        {"schema": mbdata.config.schemas.get("musicbrainz", "musicbrainz")},
+    )
 
 
 class TagRelation(Base):
