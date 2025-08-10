@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from sqlalchemy import func, select
+from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
 from next_track.db import db
@@ -30,6 +30,49 @@ def tags():
 
 @search.route("/tracks")
 def tracks():
-    search_term = request.args.get("search", "")
+    search = request.args.get("search", "")
+    query = db.session.query(Recording).options(joinedload(Recording.artist_credit))
 
-    return request.args
+    # perform full-text search if search term is provided
+    if search:
+        search_terms = " & ".join(search.split())
+
+        # also search for first 15 relevant artists
+        artists = (
+            db.session.query(ArtistCredit)
+            .where(
+                func.to_tsvector("english", ArtistCredit.name).op("@@")(
+                    func.to_tsquery(search_terms, postgresql_regconfig="english")
+                )
+            )
+            .order_by(ArtistCredit.rank.desc())
+            .limit(15)
+        )
+
+        # search based both on song name and relevant artists
+        query = query.where(
+            (
+                func.to_tsvector("english", Recording.name).op("@@")(
+                    func.to_tsquery(search_terms, postgresql_regconfig="english")
+                )
+            )
+            | (Recording.artist_credit_id.in_([artist.id for artist in artists]))
+        )
+
+    # return tracks ordered by rank
+    tracks = query.order_by(Recording.rank.desc()).limit(100)
+
+    return {
+        "tracks": [
+            {
+                "id": track.id,
+                "name": track.name,
+                "artist": {
+                    "id": track.artist_credit.id,
+                    "name": track.artist_credit.name,
+                },
+                "rank": track.rank,
+            }
+            for track in tracks
+        ]
+    }
