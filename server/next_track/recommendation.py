@@ -37,14 +37,14 @@ def get_recording_metadata(recording_id):
 
     return {
         "rating": recording_meta.rating,
-        "rating_count": recording_meta.rating_count,
         "tags": [tag.name for tag in tags],
         "urls": [url.url for url in urls],
     }
 
 
-def get_recommendation(params={}):
-    print(params)
+@recommendation.route("/tracks/recommendation", methods=["POST"])
+def recommend_track():
+    print(request.json)
 
     track = (
         db.session.query(Recording)
@@ -59,14 +59,11 @@ def get_recommendation(params={}):
     )
 
     return {
-        f"recommendation": "Your next track is: {} - {}".format(
-            track.name, track.artist_credit.name
-        ),
         "id": track.id,
+        "name": track.name,
+        "artist": {
+            "id": track.artist_credit.id,
+            "name": track.artist_credit.name
+        },
         **get_recording_metadata(track.id),
     }
-
-
-@recommendation.route("/track/recommendation", methods=["POST"])
-def recommend_track():
-    return get_recommendation(request.json)

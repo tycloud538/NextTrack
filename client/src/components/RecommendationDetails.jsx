@@ -46,7 +46,7 @@ export const RecommendationDetails = ({ recommendation }) => {
   return (
     <Flex align="center" direction="column">
       <Text size="lg" fw="bolder">
-        {recommendation.recommendation}
+        Your next track is: {recommendation.name} - {recommendation.artist.name}
       </Text>
       <Space h="md" />
       <Text size="md">Rating: {recommendation.rating}</Text>

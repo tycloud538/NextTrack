@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "@mantine/core/styles.css";
 
-import Recommendation from "./components/Recommendation";
+import { Recommendation } from "./components/Recommendation";
 
 const queryClient = new QueryClient();
 
