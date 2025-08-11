@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const postRecommendation = ({ tracks, tags }) => {
+export const postRecommendations = ({ tracks, tags }) => {
   return axios
-    .post("http://127.0.0.1:5000/tracks/recommendation", {
+    .post("http://127.0.0.1:5000/tracks/recommendations", {
       track_history: tracks,
       tags: tags,
     })

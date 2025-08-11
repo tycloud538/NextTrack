@@ -59,7 +59,7 @@ def get_tracks():
     }
 
 
-@tracks.route("/tracks/recommendation", methods=["POST"])
+@tracks.route("/tracks/recommendations", methods=["POST"])
 def recommend_track():
     print(request.json)
 
@@ -68,7 +68,7 @@ def recommend_track():
         # Loads associated artist in same query
         .options(joinedload(Recording.artist_credit))
         # Finds a random track by randomly filtering for an id
-        .where(Recording.id >= func.random() * select(func.max(Recording.id)))
+        .where(Recording.id >= func.random() * select(func.max(Recording.id)).scalar_subquery())
         # The track should ideally have some user ratings available
         .where(Recording.rank > 0)
         .order_by(Recording.id)
@@ -76,11 +76,13 @@ def recommend_track():
     )
 
     return {
-        "id": track.id,
+        "recommendation": {
+             "id": track.id,
         "name": track.name,
         "artist": {
             "id": track.artist_credit.id,
             "name": track.artist_credit.name
         },
         **get_recording_metadata(track.id),
+        }
     }
