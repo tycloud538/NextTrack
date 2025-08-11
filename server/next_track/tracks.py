@@ -1,35 +1,16 @@
 from flask import Blueprint, request
-from sqlalchemy import func
+from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 
 from next_track.db import db
-from next_track.models import Tag, Recording, ArtistCredit
+from next_track.models import Recording, ArtistCredit
+from next_track.lib.metadata import get_recording_metadata
 
-search = Blueprint("search", __name__)
-
-
-@search.route("/tags")
-def tags():
-    search = request.args.get("search", "").strip()
-    query = db.session.query(Tag)
-
-    # perform full-text search if search term is provided
-    if search:
-        search_terms = " & ".join([f"{term}:*" for term in search.split()])
-        query = query.where(
-            func.to_tsvector("english", Tag.name).op("@@")(
-                func.to_tsquery(search_terms, postgresql_regconfig="english")
-            )
-        )
-
-    # return tags ordered by rank
-    tags = query.order_by(Tag.rank.desc()).limit(100)
-
-    return {"tags": [{"id": tag.id, "name": tag.name} for tag in tags]}
+tracks = Blueprint("tracks", __name__)
 
 
-@search.route("/tracks")
-def tracks():
+@tracks.route("/tracks")
+def get_tracks():
     search = request.args.get("search", "")
     query = db.session.query(Recording).options(joinedload(Recording.artist_credit))
 
@@ -75,4 +56,31 @@ def tracks():
             }
             for track in tracks
         ]
+    }
+
+
+@tracks.route("/tracks/recommendation", methods=["POST"])
+def recommend_track():
+    print(request.json)
+
+    track = (
+        db.session.query(Recording)
+        # Loads associated artist in same query
+        .options(joinedload(Recording.artist_credit))
+        # Finds a random track by randomly filtering for an id
+        .where(Recording.id >= func.random() * select(func.max(Recording.id)))
+        # The track should ideally have some user ratings available
+        .where(Recording.rank > 0)
+        .order_by(Recording.id)
+        .first()
+    )
+
+    return {
+        "id": track.id,
+        "name": track.name,
+        "artist": {
+            "id": track.artist_credit.id,
+            "name": track.artist_credit.name
+        },
+        **get_recording_metadata(track.id),
     }
