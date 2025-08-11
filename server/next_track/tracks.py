@@ -12,7 +12,7 @@ tracks = Blueprint("tracks", __name__)
 @tracks.route("/tracks")
 def get_tracks():
     search = request.args.get("search", "")
-    query = db.session.query(Recording).options(joinedload(Recording.artist_credit))
+    query = select(Recording).options(joinedload(Recording.artist_credit))
 
     # perform full-text search if search term is provided
     if search:
@@ -41,7 +41,9 @@ def get_tracks():
         )
 
     # return tracks ordered by rank
-    tracks = query.order_by(Recording.rank.desc()).limit(100)
+    query = query.order_by(Recording.rank.desc()).limit(100)
+
+    tracks = db.session.scalars(query)
 
     return {
         "tracks": [
@@ -63,8 +65,8 @@ def get_tracks():
 def recommend_track():
     print(request.json)
 
-    track = (
-        db.session.query(Recording)
+    query = (
+        select(Recording)
         # Loads associated artist in same query
         .options(joinedload(Recording.artist_credit))
         # Finds a random track by randomly filtering for an id
@@ -72,8 +74,10 @@ def recommend_track():
         # The track should ideally have some user ratings available
         .where(Recording.rank > 0)
         .order_by(Recording.id)
-        .first()
+        .limit(1)
     )
+
+    track = db.session.scalar(query)
 
     return {
         "recommendation": {

@@ -1,9 +1,8 @@
 from flask import Blueprint, request
-from sqlalchemy import func
-from sqlalchemy.orm import joinedload
+from sqlalchemy import select, func
 
 from next_track.db import db
-from next_track.models import Tag, Recording, ArtistCredit
+from next_track.models import Tag
 
 tags = Blueprint("tags", __name__)
 
@@ -11,7 +10,7 @@ tags = Blueprint("tags", __name__)
 @tags.route("/tags")
 def get_tags():
     search = request.args.get("search", "").strip()
-    query = db.session.query(Tag)
+    query = select(Tag)
 
     # perform full-text search if search term is provided
     if search:
@@ -23,6 +22,8 @@ def get_tags():
         )
 
     # return tags ordered by rank
-    tags = query.order_by(Tag.rank.desc()).limit(100)
+    query = query.order_by(Tag.rank.desc()).limit(100)
+
+    tags = db.session.scalars(query)
 
     return {"tags": [{"id": tag.id, "name": tag.name} for tag in tags]}
