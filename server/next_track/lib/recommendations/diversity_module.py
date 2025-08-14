@@ -5,7 +5,7 @@ from next_track.db import db
 from next_track.models import Recording, RecordingTag
 
 
-class CollaborativeFiltering:
+class DiversityModule:
     def __init__(self, track_history, tags):
         self.track_history = track_history
         self.tags = tags
@@ -41,6 +41,7 @@ class CollaborativeFiltering:
                     | RecordingTag.id.in_(self.listened_track_tags())
                 )
             )
+            # TODO: Have a better ranking algorithm here, opposite to content-based model
             .order_by(Recording.rank.desc())
             .limit(num_tracks)
         )
