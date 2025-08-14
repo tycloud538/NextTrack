@@ -10,16 +10,39 @@ class ContentBasedModel:
         self.track_history = track_history
         self.tags = tags
 
-    def recommend_tracks(self, num_tracks=100):
+    def listened_tracks(self):
         query = (
             select(Recording)
-            # Loads associated artist in same query
             .options(joinedload(Recording.artist_credit))
+            .where(Recording.id.in_([track.id for track in self.track_history]))
+        )
+        return db.session.scalars(query)
+
+    def listened_track_tags(self):
+        query = (
+            select(RecordingTag)
             .join(RecordingTag.recording)
+            .where(Recording.id.in_([track.id for track in self.track_history]))
+        )
+        return [tag.id for tag in db.session.scalars(query)]
+
+    def recommend_tracks(self, num_tracks=100):
+        query = (
+            select(Recording.id)
+            .join(RecordingTag.recording)
+            # Find tracks that have the relevant tags and artists
+            .where(
+                RecordingTag.id.in_(self.tags)
+                | Recording.artist_credit.in_(
+                    [track.artist_credit for track in self.listened_tracks()]
+                )
+                | RecordingTag.id.in_(self.listened_track_tags())
+            )
+            # TODO: Have a better ranking algorithm here for content-based model
             .order_by(Recording.rank.desc())
             .limit(num_tracks)
         )
 
         tracks = db.session.scalars(query)
 
-        return tracks
+        return [track.id for track in tracks]
