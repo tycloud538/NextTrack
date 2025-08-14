@@ -30,13 +30,16 @@ class ContentBasedModel:
         query = (
             select(Recording.id)
             .join(RecordingTag.recording)
-            # Find tracks that have the relevant tags and artists
+            # Find tracks that have the relevant tags and artists, but not in track_history
             .where(
-                RecordingTag.id.in_(self.tags)
-                | Recording.artist_credit.in_(
-                    [track.artist_credit for track in self.listened_tracks()]
+                ~Recording.id.in_(self.track_history)
+                & (
+                    RecordingTag.id.in_(self.tags)
+                    | Recording.artist_credit.in_(
+                        [track.artist_credit for track in self.listened_tracks()]
+                    )
+                    | RecordingTag.id.in_(self.listened_track_tags())
                 )
-                | RecordingTag.id.in_(self.listened_track_tags())
             )
             # TODO: Have a better ranking algorithm here for content-based model
             .order_by(Recording.rank.desc())
