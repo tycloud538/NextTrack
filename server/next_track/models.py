@@ -16761,4 +16761,3 @@ class WorkAttribute(Base):
         "WorkAttributeTypeAllowedValue",
         foreign_keys=[work_attribute_type_allowed_value_id],
     )
-

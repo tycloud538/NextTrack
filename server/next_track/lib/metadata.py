@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from next_track.db import db
 from next_track.models import (
     LinkRecordingURL,
@@ -9,23 +11,22 @@ from next_track.models import (
 
 
 def get_recording_metadata(recording_id):
-    urls = (
-        db.session.query(URL)
+    urls = db.session.scalars(
+        select(URL)
         .join(LinkRecordingURL.entity1)
         .where(LinkRecordingURL.entity0_id == recording_id)
-        .all()
     )
 
-    tags = (
-        db.session.query(Tag)
+    tags = db.session.scalars(
+        select(Tag)
         .join(RecordingTag.tag)
         .where(RecordingTag.recording_id == recording_id)
         .order_by(Tag.rank.desc())
-        .all()
+        .limit(5)
     )
 
-    recording_meta = (
-        db.session.query(RecordingMeta).where(RecordingMeta.id == recording_id).first()
+    recording_meta = db.session.scalar(
+        select(RecordingMeta).where(RecordingMeta.id == recording_id)
     )
 
     return {
@@ -33,4 +34,3 @@ def get_recording_metadata(recording_id):
         "tags": [tag.name for tag in tags],
         "urls": [url.url for url in urls],
     }
-

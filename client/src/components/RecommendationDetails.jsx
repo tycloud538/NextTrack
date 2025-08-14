@@ -21,7 +21,7 @@ export const RecommendationDetails = ({ recommendation }) => {
 
   const tagText =
     recommendation.tags.length > 0 ? (
-      <Text size="md">Tags: {recommendation.tags.slice(0, 5).join(", ")}</Text>
+      <Text size="md">Tags: {recommendation.tags.join(", ")}</Text>
     ) : (
       <Placeholder />
     );

@@ -1,5 +1,5 @@
 def test_get_tags(client):
-    response = client.get('/tags')
+    response = client.get("/tags")
     tags = response.json["tags"]
 
     assert response.status_code == 200
@@ -8,20 +8,21 @@ def test_get_tags(client):
 
 
 def test_get_tags_with_search(client):
-    search_term = 'roc'
+    search_term = "roc"
 
-    response = client.get(f'/tags?search={search_term}')
+    response = client.get(f"/tags?search={search_term}")
     tags = response.json["tags"]
 
     assert response.status_code == 200
     assert tags
     assert len(tags) == 100
-    assert all(search_term in tag['name'].lower() for tag in tags)
+    assert all(search_term in tag["name"].lower() for tag in tags)
+
 
 def test_get_tags_with_invalid_search(client):
-    search_term = 'invalid_search_term'
+    search_term = "invalid_search_term"
 
-    response = client.get(f'/tags?search={search_term}')
+    response = client.get(f"/tags?search={search_term}")
     tags = response.json["tags"]
 
     assert response.status_code == 200

@@ -66,16 +66,15 @@ def get_tracks():
 def recommend_track():
     payload = request.json
 
-    track = get_track_recommendation(payload.get("track_history", []), payload.get("tags", []))
+    track = get_track_recommendation(
+        payload.get("track_history", []), payload.get("tags", [])
+    )
 
     return {
         "recommendation": {
-             "id": track.id,
-        "name": track.name,
-        "artist": {
-            "id": track.artist_credit.id,
-            "name": track.artist_credit.name
-        },
-        **get_recording_metadata(track.id),
+            "id": track.id,
+            "name": track.name,
+            "artist": {"id": track.artist_credit.id, "name": track.artist_credit.name},
+            **get_recording_metadata(track.id),
         }
     }
