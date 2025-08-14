@@ -10,14 +10,14 @@ import { TagMultiSelect } from "./TagMultiSelect";
 import { TrackMultiSelect } from "./TrackMultiSelect";
 
 export const Recommendation = () => {
-  const [selectedTags, setSelectedTags] = useState([12, 34]);
-  const [selectedTracks, setSelectedTracks] = useState([56, 78]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTracks, setSelectedTracks] = useState([]);
   const [recommendation, setRecommendation] = useState(null);
 
   const mutation = useMutation({
     mutationFn: postRecommendations,
     onSuccess: (response) => {
-      setRecommendation(response);
+      setRecommendation(response.recommendation);
     },
   });
 

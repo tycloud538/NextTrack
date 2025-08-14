@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { Anchor, Flex, Space, Text } from "@mantine/core";
 
 const Placeholder = ({ size = "md" }) => <Text size={size}>{"\u200e"}</Text>;
@@ -30,12 +32,12 @@ export const RecommendationDetails = ({ recommendation }) => {
         {"Links: "}
         {recommendation.urls.slice(0, 5).map((url) => {
           return (
-            <>
+            <Fragment key={url}>
               <Anchor href={url} target="_blank" rel="noreferrer noopener">
                 {new URL(url).hostname}
               </Anchor>
               {"  "}
-            </>
+            </Fragment>
           );
         })}
       </Text>

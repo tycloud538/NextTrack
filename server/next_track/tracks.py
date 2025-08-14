@@ -5,6 +5,7 @@ from sqlalchemy.orm import joinedload
 from next_track.db import db
 from next_track.models import Recording, ArtistCredit
 from next_track.lib.metadata import get_recording_metadata
+from next_track.lib.recommendations import get_track_recommendation
 
 tracks = Blueprint("tracks", __name__)
 
@@ -63,21 +64,9 @@ def get_tracks():
 
 @tracks.route("/tracks/recommendations", methods=["POST"])
 def recommend_track():
-    print(request.json)
+    payload = request.json
 
-    query = (
-        select(Recording)
-        # Loads associated artist in same query
-        .options(joinedload(Recording.artist_credit))
-        # Finds a random track by randomly filtering for an id
-        .where(Recording.id >= func.random() * select(func.max(Recording.id)).scalar_subquery())
-        # The track should ideally have some user ratings available
-        .where(Recording.rank > 0)
-        .order_by(Recording.id)
-        .limit(1)
-    )
-
-    track = db.session.scalar(query)
+    track = get_track_recommendation(payload.get("track_history", []), payload.get("tags", []))
 
     return {
         "recommendation": {
