@@ -3,15 +3,9 @@ class Base:
     Base class for recommendation models.
     """
 
-    def __init__(self, tracks, tags):
+    def __init__(self, tracks, tag_ids):
         self.tracks = tracks
-        self.tags = tags
 
-    def artist_credit_ids(self):
-        return [track.artist_credit_id for track in self.tracks]
-
-    def track_ids(self):
-        return [track.id for track in self.tracks]
-
-    def tag_ids(self):
-        return [tag.id for tag in self.tags]
+        self.artist_credit_ids = [track.artist_credit_id for track in tracks]
+        self.track_ids = [track.id for track in tracks]
+        self.tag_ids = tag_ids

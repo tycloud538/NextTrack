@@ -1,8 +1,7 @@
 from flask import Blueprint, request
 
 from next_track.lib.metadata import get_recording_metadata
-from next_track.lib.recommendations import get_track_recommendation
-from next_track.lib.tracks import search_tracks
+from next_track.lib.tracks import search_tracks, get_track_recommendation
 
 tracks = Blueprint("tracks", __name__)
 
@@ -38,11 +37,9 @@ def recommend_track():
     Controller to recommend a track based on user history and relevant tags.
     """
     track_history = request.json.get("track_history", [])
-    relevant_tags = request.json.get("tags", [])
+    tags = request.json.get("tags", [])
 
-    track = get_track_recommendation(
-        track_history=track_history, relevant_tags=relevant_tags
-    )
+    track = get_track_recommendation(track_history=track_history, tags=tags)
 
     return {
         "recommendation": {

@@ -12,30 +12,20 @@ from next_track.lib.recommendations.content_based import ContentBasedModel
 from next_track.lib.recommendations.diversity_module import DiversityModule
 
 
-def get_track_recommendation(track_history, relevant_tags):
-    """
-    Get a track recommendation based on the user's history and tags.
-    """
-    # If no history or tags, return a random track
-    if not track_history and not relevant_tags:
-        return get_random_track()
-
-    # Else, provide a content-driven recommendation
-    return get_content_driven_recommendation(track_history, relevant_tags)
-
-
-def get_all_tracks_and_tags(track_history, relevant_tags):
+def get_all_tracks_and_tag_ids(track_history, relevant_tags):
     """
     Get all tracks and tags based on user history and relevant tags.
     """
     # Get all tracks from user's listening history
     tracks = db.session.scalars(
-        select(Recording).where(Recording.id.in_(track_history))
+        select(Recording).where(
+            Recording.id.in_(track_history)
+        )
     )
 
     # Get the user-selected tags and 15 top tags from track history
-    tags = db.session.scalars(
-        select(Tag).where(
+    tag_ids = db.session.scalars(
+        select(Tag.id).where(
             Tag.id.in_(relevant_tags)
             | Tag.id.in_(
                 (
@@ -50,22 +40,22 @@ def get_all_tracks_and_tags(track_history, relevant_tags):
     )
 
     # Need to deconstruct scalar results to preserve models in-memory
-    return [track for track in tracks], [tag for tag in tags]
+    return [track for track in tracks], [tag_id for tag_id in tag_ids]
 
 
-def get_content_driven_recommendation(track_history, relevant_tags):
+def get_content_driven_recommendation(track_history, tags):
     """
     Get a content-driven track recommendation based on user history and relevant tags.
     """
-    tracks, tags = get_all_tracks_and_tags(track_history, relevant_tags)
+    tracks, tag_ids = get_all_tracks_and_tag_ids(track_history, tags)
 
-    content_based_model = ContentBasedModel(tracks, tags)
+    content_based_model = ContentBasedModel(tracks, tag_ids)
     tracks_1 = content_based_model.recommend_tracks()
 
     collaborative_filtering = CollaborativeFiltering(tracks, tags)
     tracks_2 = collaborative_filtering.recommend_tracks()
 
-    diversity_module = DiversityModule(tracks, tags)
+    diversity_module = DiversityModule(tracks, tag_ids)
     tracks_3 = diversity_module.recommend_tracks()
 
     return choose_random_track(
