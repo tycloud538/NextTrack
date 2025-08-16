@@ -15,6 +15,9 @@ load_dotenv(os.path.join(BASEDIR, ".env"))
 
 
 def create_app():
+    """
+    Create and configure the Flask application.
+    """
     app = Flask(__name__)
     CORS(app)
 

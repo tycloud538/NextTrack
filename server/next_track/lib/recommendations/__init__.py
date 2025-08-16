@@ -38,8 +38,8 @@ def get_all_tracks_and_tags(track_history, relevant_tags):
     # Get the user-selected tags and 15 top tags from track history
     tags = db.session.scalars(
         select(Tag).where(
-            Tag.id.in_(relevant_tags) |
-            Tag.id.in_(
+            Tag.id.in_(relevant_tags)
+            | Tag.id.in_(
                 (
                     select(Tag.id)
                     .join(RecordingTag.tag)
@@ -103,6 +103,9 @@ def get_random_track():
 
 
 def choose_random_track(track_ids):
+    """
+    Fetch a random track from a list of track IDs.
+    """
     track_id = random.choice(track_ids)
 
     query = (

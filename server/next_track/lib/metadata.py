@@ -11,6 +11,9 @@ from next_track.models import (
 
 
 def get_recording_metadata(recording_id):
+    """
+    Get metadata for a specific recording.
+    """
     urls = db.session.scalars(
         select(URL)
         .join(LinkRecordingURL.entity1)

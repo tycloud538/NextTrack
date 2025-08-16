@@ -7,6 +7,10 @@ from next_track.lib.recommendations.base import Base
 
 
 class CollaborativeFiltering(Base):
+    """
+    Collaborative filtering recommendation model that recommends tracks based on user ratings and popularity.
+    """
+
     def recommend_tracks(self, num_tracks=20):
         query = (
             select(Recording.id)

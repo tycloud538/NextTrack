@@ -6,6 +6,10 @@ from next_track.lib.recommendations.base import Base
 
 
 class ContentBasedModel(Base):
+    """
+    Content-based recommendation model that recommends tracks based on user history and relevant tags.
+    """
+
     def recommend_tracks(self, num_tracks=40):
         query = (
             select(Recording.id).join(RecordingTag.recording)

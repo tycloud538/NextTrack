@@ -9,6 +9,9 @@ tracks = Blueprint("tracks", __name__)
 
 @tracks.route("/tracks")
 def get_tracks():
+    """
+    Controller to search for tracks based on a search term.
+    """
     search = request.args.get("search", "")
 
     tracks = search_tracks(term=search)
@@ -31,6 +34,9 @@ def get_tracks():
 
 @tracks.route("/tracks/recommendations", methods=["POST"])
 def recommend_track():
+    """
+    Controller to recommend a track based on user history and relevant tags.
+    """
     track_history = request.json.get("track_history", [])
     relevant_tags = request.json.get("tags", [])
 

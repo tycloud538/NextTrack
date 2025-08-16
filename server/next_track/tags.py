@@ -10,6 +10,9 @@ tags = Blueprint("tags", __name__)
 
 @tags.route("/tags")
 def get_tags():
+    """
+    Controller to search for tags based on a search term.
+    """
     search = request.args.get("search", "").strip()
 
     tags = search_tags(search)

@@ -5,6 +5,9 @@ from next_track.models import Tag
 
 
 def search_tags(term):
+    """
+    Search for tags based on a search term.
+    """
     query = select(Tag)
 
     # perform full-text search if search term is provided

@@ -1,4 +1,8 @@
 class Base:
+    """
+    Base class for recommendation models.
+    """
+
     def __init__(self, tracks, tags):
         self.tracks = tracks
         self.tags = tags

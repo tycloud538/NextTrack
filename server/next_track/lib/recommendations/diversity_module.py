@@ -7,6 +7,10 @@ from next_track.lib.recommendations.base import Base
 
 
 class DiversityModule(Base):
+    """
+    Diversity module that recommends tracks aiming to maximize artist diversity.
+    """
+
     def __init__(self, tracks, tags, artist_ids=[]):
         super().__init__(tracks, tags)
         self.artist_ids = artist_ids
