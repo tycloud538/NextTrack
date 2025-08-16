@@ -30,9 +30,7 @@ def get_all_tracks_and_tags(track_history, relevant_tags):
     """
     # Get all tracks from user's listening history
     tracks = db.session.scalars(
-        select(Recording)
-        .options(joinedload(Recording.artist_credit))
-        .where(Recording.id.in_(track_history))
+        select(Recording).where(Recording.id.in_(track_history))
     )
 
     # Get the user-selected tags and 15 top tags from track history
@@ -51,7 +49,8 @@ def get_all_tracks_and_tags(track_history, relevant_tags):
         )
     )
 
-    return tracks, tags
+    # Need to deconstruct scalar results to preserve models in-memory
+    return [track for track in tracks], [tag for tag in tags]
 
 
 def get_content_driven_recommendation(track_history, relevant_tags):
@@ -106,6 +105,7 @@ def choose_random_track(track_ids):
     """
     Fetch a random track from a list of track IDs.
     """
+    print("TCL ~ All track ids:", track_ids)
     track_id = random.choice(track_ids)
 
     query = (

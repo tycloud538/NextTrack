@@ -11,19 +11,29 @@ class CollaborativeFiltering(Base):
     Collaborative filtering recommendation model that recommends tracks based on user ratings and popularity.
     """
 
-    def recommend_tracks(self, num_tracks=20):
-        query = (
+    def recommend_tracks(self, num_tracks=40):
+        print("self.artist_credit_ids()", self.artist_credit_ids())
+
+        artist_tracks = db.session.scalars(
             select(Recording.id)
-            .join(RecordingTag.recording)
-            # Find tracks that have the relevant tags and artists, but not in track_history
-            .where(
-                (
-                    RecordingTag.tag_id.in_(self.tag_ids())
-                    | Recording.artist_credit_id.in_(self.artist_credit_ids())
-                )
-            )
+            # Find tracks that are relevant to the related artists
+            .where(Recording.artist_credit_id.in_(self.artist_credit_ids()))
             .order_by(Recording.rank.desc())
-            .limit(num_tracks)
+            .limit(num_tracks // 2)
         )
 
-        return db.session.scalars(query)
+        # print('artist_tracks', [*artist_tracks])
+
+        tag_tracks = db.session.scalars(
+            select(Recording.id)
+            .join(RecordingTag.recording)
+            # Find tracks that have the relevant tags, but not the related
+            .where(RecordingTag.tag_id.in_(self.tag_ids()))
+            .where(~Recording.artist_credit_id.in_(self.artist_credit_ids()))
+            .order_by(Recording.rank.desc())
+            .limit(num_tracks // 2)
+        )
+
+        # print('tag_tracks', [*tag_tracks])
+
+        return [*artist_tracks, *tag_tracks]

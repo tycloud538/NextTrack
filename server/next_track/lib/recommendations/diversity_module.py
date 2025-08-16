@@ -17,7 +17,7 @@ class DiversityModule(Base):
 
     def recommend_tracks(self, num_tracks=40):
         query = (
-            select(Recording.id, Recording.artist_credit_id)
+            select(Recording.id)
             .join(RecordingTag.recording)
             # Find tracks that have the relevant tags and artists, but not in track_history
             .where(~Recording.artist_credit_id.in_(self.artist_ids))
