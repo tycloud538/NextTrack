@@ -63,3 +63,8 @@ create index artist_credit_rank_idx on artist_credit (rank desc);
 create index recording_rank_idx on recording (rank desc);
 
 create index tag_rank_idx on tag (rank desc);
+
+-- SQL commands to create a random rank column on recordings
+alter table recording add random_rank integer not null default floor(random() * 12);
+
+create index recording_random_rank_idx on recording (random_rank);
