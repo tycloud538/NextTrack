@@ -1,5 +1,4 @@
-from sqlalchemy import select, func
-from sqlalchemy.orm import joinedload
+from sqlalchemy import select
 
 from next_track.db import db
 from next_track.models import Recording, RecordingTag
@@ -11,7 +10,7 @@ class CollaborativeFiltering(Base):
     Collaborative filtering recommendation model that recommends tracks based on user ratings and popularity.
     """
 
-    def recommend_tracks(self, num_tracks=40):
+    def recommend_tracks(self, num_tracks=30):
         # Find top tracks that are relevant to the artists
         artist_track_ids = db.session.scalars(
             select(Recording.id)
