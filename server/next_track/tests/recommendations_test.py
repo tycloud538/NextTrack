@@ -1,4 +1,4 @@
-def test_recommend_track(client):
+def test_recommend_diverse_tracks(client):
     tags = [1]
     track_history = [1]
     artist_ids = set()
