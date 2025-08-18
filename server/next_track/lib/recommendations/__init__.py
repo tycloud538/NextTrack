@@ -93,7 +93,6 @@ def choose_random_track(track_ids):
     """
     Fetch a random track from a list of track IDs.
     """
-    print("TCL ~ All track ids:", track_ids)
     track_id = random.choice(track_ids)
 
     query = (
