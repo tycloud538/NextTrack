@@ -18,9 +18,7 @@ def get_all_tracks_and_tag_ids(track_history, relevant_tags):
     """
     # Get all tracks from user's listening history
     tracks = db.session.scalars(
-        select(Recording).where(
-            Recording.id.in_(track_history)
-        )
+        select(Recording).where(Recording.id.in_(track_history))
     )
 
     # Get the user-selected tags and 15 top tags from track history

@@ -22,9 +22,7 @@ class ContentBasedModel(Base):
         track_ids = db.session.scalars(
             select(Recording.id)
             .join(RecordingTag.recording)
-            .where(
-                RecordingTag.tag_id.in_(self.tag_ids)
-            )
+            .where(RecordingTag.tag_id.in_(self.tag_ids))
             .where(Recording.artist_credit_id.in_(self.artist_credit_ids))
             .where(Recording.random_rank.in_(random_ranks))
             .limit(num_tracks)

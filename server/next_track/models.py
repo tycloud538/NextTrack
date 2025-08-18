@@ -14002,7 +14002,9 @@ class Recording(Base):
     )
     length = Column(Integer)
     rank = Column(Integer, nullable=False, default=0, server_default=sql.text("0"))
-    random_rank = Column(Integer, nullable=False, default=0, server_default=sql.text("0"))
+    random_rank = Column(
+        Integer, nullable=False, default=0, server_default=sql.text("0")
+    )
     comment = Column(
         String(255), nullable=False, default="", server_default=sql.text("''")
     )

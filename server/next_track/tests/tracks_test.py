@@ -1,6 +1,3 @@
-from next_track import tags
-
-
 def test_get_tracks(client):
     response = client.get("/tracks")
     tracks = response.json["tracks"]
@@ -41,8 +38,10 @@ def test_get_tracks_with_invalid_search(client):
 
 def test_recommend_track(client):
     tags = [1]
-    tracks = [1]
-    response = client.post(f"/tracks/recommendations", json={"tracks": tracks})
+    track_history = [1]
+    response = client.post(
+        f"/tracks/recommendations", json={"track_history": track_history, "tags": tags}
+    )
     recommendation = response.json["recommendation"]
 
     assert response.status_code == 200
