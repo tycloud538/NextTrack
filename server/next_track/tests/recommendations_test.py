@@ -5,7 +5,8 @@ def test_recommend_diverse_tracks(client):
 
     for _ in range(20):
         response = client.post(
-            f"/tracks/recommendations", json={"track_history": track_history, "tags": tags}
+            f"/tracks/recommendations",
+            json={"track_history": track_history, "tags": tags},
         )
         recommendation = response.json["recommendation"]
 
@@ -18,6 +19,7 @@ def test_recommend_diverse_tracks(client):
 
     print(f"Number of unique artists: {len(artist_ids)}")
     assert len(artist_ids) >= 10
+
 
 ########## RESULTS ###########
 # Number of unique artists: 13

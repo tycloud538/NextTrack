@@ -5,8 +5,8 @@ from sqlalchemy.orm import joinedload
 
 from next_track.db import db
 from next_track.models import Recording, RecordingTag, Tag
-from next_track.lib.recommendations.collaborative_filtering import (
-    CollaborativeFiltering,
+from next_track.lib.recommendations.context_based_filtering import (
+    ContextBasedFiltering,
 )
 from next_track.lib.recommendations.content_based import ContentBasedModel
 from next_track.lib.recommendations.diversity_module import DiversityModule
@@ -50,8 +50,8 @@ def get_content_driven_recommendation(track_history, tags):
     content_based_model = ContentBasedModel(tracks, tag_ids)
     tracks_1 = content_based_model.recommend_tracks()
 
-    collaborative_filtering = CollaborativeFiltering(tracks, tags)
-    tracks_2 = collaborative_filtering.recommend_tracks()
+    context_based_filtering = ContextBasedFiltering(tracks, tags)
+    tracks_2 = context_based_filtering.recommend_tracks()
 
     diversity_module = DiversityModule(tracks, tag_ids)
     tracks_3 = diversity_module.recommend_tracks()

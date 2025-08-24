@@ -5,9 +5,9 @@ from next_track.models import Recording, RecordingTag
 from next_track.lib.recommendations.base import Base
 
 
-class CollaborativeFiltering(Base):
+class ContextBasedFiltering(Base):
     """
-    Collaborative filtering recommendation model that recommends tracks based on user ratings and popularity.
+    Context-based filtering recommendation model that recommends tracks based on user ratings and popularity.
     """
 
     def recommend_tracks(self, num_tracks=30):
