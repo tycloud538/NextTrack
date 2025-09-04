@@ -1,3 +1,5 @@
+> REMINDER TO MAKE THIS PUBLIC
+
 # NextTrack, a Music Recommendation App
 
 ## Installation
