@@ -1,5 +1,5 @@
 def test_recommend_diverse_tracks(client):
-    tags = [7, 11, 19] # rock, electronic, pop
+    tags = [7, 11, 19]  # rock, electronic, pop
     track_history = []
     artist_ids = set()
 
