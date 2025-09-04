@@ -45,6 +45,7 @@ export const TrackMultiSelect = ({ onChange }) => {
       defaultOptions
       loadOptions={getTrackOptions}
       onChange={handleChange}
+      placeholder="Select songs that you listen to.."
     />
   );
 };

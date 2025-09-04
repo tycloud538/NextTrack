@@ -38,6 +38,7 @@ export const TagMultiSelect = ({ onChange }) => {
       defaultOptions
       loadOptions={getTagOptions}
       onChange={handleChange}
+      placeholder="Select genres that you like.."
     />
   );
 };
