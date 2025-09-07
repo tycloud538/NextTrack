@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from next_track.db import db
 from next_track.models import Recording, ArtistCredit
 from next_track.lib.recommendations import (
-    get_content_driven_recommendation,
+    get_track_recommendation,
     get_random_track,
 )
 
@@ -58,4 +58,4 @@ def get_track_recommendation(track_history, tags):
         return get_random_track()
 
     # Else, provide a content-driven recommendation
-    return get_content_driven_recommendation(track_history, tags)
+    return get_track_recommendation(track_history, tags)

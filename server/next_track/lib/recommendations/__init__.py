@@ -41,7 +41,7 @@ def get_all_tracks_and_tag_ids(track_history, relevant_tags):
     return [track for track in tracks], [tag_id for tag_id in tag_ids]
 
 
-def get_content_driven_recommendation(track_history, tags):
+def get_track_recommendation(track_history, tags):
     """
     Get a content-driven track recommendation based on user history and relevant tags.
     """
