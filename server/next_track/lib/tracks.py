@@ -1,12 +1,9 @@
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 
+import next_track.lib.recommendations as recommendations
 from next_track.db import db
 from next_track.models import Recording, ArtistCredit
-from next_track.lib.recommendations import (
-    get_track_recommendation,
-    get_random_track,
-)
 
 
 def search_tracks(term):
@@ -55,7 +52,7 @@ def get_track_recommendation(track_history, tags):
     """
     # If no history or tags, return a random track
     if not track_history and not tags:
-        return get_random_track()
+        return recommendations.get_random_track()
 
     # Else, provide a content-driven recommendation
-    return get_track_recommendation(track_history, tags)
+    return recommendations.get_track_recommendation(track_history, tags)

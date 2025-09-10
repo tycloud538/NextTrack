@@ -37,9 +37,7 @@ def recommend_track():
     Controller to recommend a track based on user history and relevant tags.
     """
     track_history = request.json.get("track_history", [])
-    print("TCL ~ track_history:", track_history)
     tags = request.json.get("tags", [])
-    print("TCL ~ tags:", tags)
 
     track = get_track_recommendation(track_history=track_history, tags=tags)
 
