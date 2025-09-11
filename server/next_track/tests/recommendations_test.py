@@ -22,8 +22,8 @@ def test_recommend_diverse_tracks(client):
 
 
 def test_recommend_diverse_tracks_2(client):
-    tags = [11]  # electronic
-    track_history = [4189493]  # Thriller
+    tags = [7, 11, 19]  # rock, electronic, pop
+    track_history = [4189493, 587769, 12031619]  # Thriller, Free bird, Rolling in the deep
     artist_ids = set()
 
     for _ in range(20):

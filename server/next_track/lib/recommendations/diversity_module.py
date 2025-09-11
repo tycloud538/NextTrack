@@ -12,7 +12,7 @@ class DiversityModule(Base):
     Diversity module that recommends tracks aiming to maximize artist diversity.
     """
 
-    def recommend_tracks(self, num_tracks=40):
+    def recommend_tracks(self, num_tracks=45):
         # Introduce an element of randomness (6 possible sets)
         random_rank = random.randint(0, 5)
         random_ranks = [random_rank, (random_rank + 6) % 12]
