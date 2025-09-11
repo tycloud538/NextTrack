@@ -1,6 +1,0 @@
-# Description: Publish database only port on the host
-
-services:
-  db:
-    ports:
-      - "${MUSICBRAINZ_DOCKER_HOST_IPADDRCOL:-}5432:5432"
