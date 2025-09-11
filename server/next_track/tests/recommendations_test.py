@@ -5,7 +5,7 @@ def test_recommend_diverse_tracks(client):
 
     for _ in range(20):
         response = client.post(
-            f"/tracks/recommendations",
+            "/tracks/recommendations",
             json={"track_history": track_history, "tags": tags},
         )
         recommendation = response.json["recommendation"]
@@ -23,12 +23,16 @@ def test_recommend_diverse_tracks(client):
 
 def test_recommend_diverse_tracks_2(client):
     tags = [7, 11, 19]  # rock, electronic, pop
-    track_history = [4189493, 587769, 12031619]  # Thriller, Free bird, Rolling in the deep
+    track_history = [
+        4189493,
+        587769,
+        12031619,
+    ]  # Thriller, Free bird, Rolling in the deep
     artist_ids = set()
 
     for _ in range(20):
         response = client.post(
-            f"/tracks/recommendations",
+            "/tracks/recommendations",
             json={"track_history": track_history, "tags": tags},
         )
         recommendation = response.json["recommendation"]
