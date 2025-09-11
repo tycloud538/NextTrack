@@ -21,6 +21,29 @@ def test_recommend_diverse_tracks(client):
     assert len(artist_ids) >= 10
 
 
+def test_recommend_diverse_tracks_2(client):
+    tags = [11]  # electronic
+    track_history = [4189493]  # Thriller
+    artist_ids = set()
+
+    for _ in range(20):
+        response = client.post(
+            f"/tracks/recommendations",
+            json={"track_history": track_history, "tags": tags},
+        )
+        recommendation = response.json["recommendation"]
+
+        assert response.status_code == 200
+        assert recommendation
+        assert recommendation["id"]
+        assert recommendation["artist"]["id"]
+
+        artist_ids.add(recommendation["artist"]["id"])
+
+    print(f"Number of unique artists (2): {len(artist_ids)}")
+    assert len(artist_ids) >= 10
+
+
 ########## RESULTS ###########
 # Number of unique artists: 13
 # Number of unique artists: 17
