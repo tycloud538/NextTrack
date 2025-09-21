@@ -1,4 +1,4 @@
-import { MantineProvider, Container } from "@mantine/core";
+import { MantineProvider, Container, Title } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "@mantine/core/styles.css";
@@ -12,6 +12,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
         <Container fluid>
+          <Title align="center" mb={96} size={28}>
+            NextTrack: Your Music Recommendation App
+          </Title>
           <Recommendation />
         </Container>
       </MantineProvider>
